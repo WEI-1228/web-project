@@ -37,4 +37,9 @@ public class EbookService {
         pageResp.setTotal(pageInfo.getTotal());
         return pageResp;
     }
+
+    public List<EbookResp> all(EbookReq req) {
+        List<Ebook> ebookList = ebookMapper.selectByExample(null);
+        return CopyUtil.copyList(ebookList, EbookResp.class);
+    }
 }
