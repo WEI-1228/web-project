@@ -6,6 +6,7 @@ import cn.anlper.wiki.domain.EbookExample;
 import cn.anlper.wiki.mapper.EbookMapper;
 import cn.anlper.wiki.resp.EbookResp;
 import cn.anlper.wiki.util.CopyUtil;
+import com.github.pagehelper.PageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -22,6 +23,8 @@ public class EbookService {
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName()))
             criteria.andNameLike("%" + req.getName() + "%");
+
+        PageHelper.startPage(1, 3);
         List<Ebook> ebookList = ebookMapper.selectByExample(ebookExample);
 
 //        List<EbookResp> respList = new ArrayList<>();
