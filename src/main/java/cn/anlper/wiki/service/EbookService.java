@@ -8,6 +8,7 @@ import cn.anlper.wiki.mapper.EbookMapper;
 import cn.anlper.wiki.resp.EbookQueryResp;
 import cn.anlper.wiki.resp.PageResp;
 import cn.anlper.wiki.util.CopyUtil;
+import cn.anlper.wiki.util.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,8 @@ import java.util.List;
 public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
-
+    @Resource
+    private SnowFlake snowFlake;
     public PageResp<EbookQueryResp> list(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
@@ -36,6 +38,7 @@ public class EbookService {
         PageResp<EbookQueryResp> pageResp = new PageResp<>();
         pageResp.setList(respList);
         pageResp.setTotal(pageInfo.getTotal());
+        System.out.println(pageResp);
         return pageResp;
     }
 
@@ -47,6 +50,7 @@ public class EbookService {
     public void save(EbookSaveReq req) {
         Ebook ebook = CopyUtil.copy(req, Ebook.class);
         if (ObjectUtils.isEmpty(req.getId())) {
+            ebook.setId(snowFlake.nextId());
             ebookMapper.insert(ebook);
         } else {
             ebookMapper.updateByPrimaryKey(ebook);
