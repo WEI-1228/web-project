@@ -11,18 +11,20 @@
           :loading="loading"
           @change="handleTableChange"
       >
-        <template #cover="{ text: cover }">
-          <img v-if="cover" :src="cover" alt="avatar" />
-        </template>
-        <template v-slot:action="{ text, record }">
-          <a-space size="small">
-            <a-button type="primary" @click="edit(record)">
-              编辑
-            </a-button>
-              <a-button type="danger">
+        <template v-slot:bodyCell="{ column, record }">
+          <template v-if="column.dataIndex === 'cover'">
+            <img v-if="record.cover" :src="record.cover" alt="avatar" />
+          </template>
+          <template v-if="column.key === 'action'">
+            <a-space size="small">
+              <a-button type="primary">
+                编辑
+              </a-button>
+              <a-button danger>
                 删除
               </a-button>
-          </a-space>
+            </a-space>
+          </template>
         </template>
       </a-table>
     </a-layout-content>
@@ -39,7 +41,7 @@ export default defineComponent({
     const ebooks = ref();
     const pagination = ref({
       current: 1,
-      pageSize: 10,
+      pageSize: 2,
       total: 0
     });
     const loading = ref(false);
@@ -48,15 +50,18 @@ export default defineComponent({
       {
         title: '封面',
         dataIndex: 'cover',
-        slots: { customRender: 'cover' }
       },
       {
         title: '名称',
         dataIndex: 'name'
       },
       {
-        title: '分类',
-        slots: { customRender: 'category' }
+        title: '分类一',
+        dataIndex: 'category1Id'
+      },
+      {
+        title: '分类二',
+        dataIndex: 'category2Id'
       },
       {
         title: '文档数',
@@ -72,8 +77,7 @@ export default defineComponent({
       },
       {
         title: 'Action',
-        key: 'action',
-        slots: { customRender: 'action' }
+        key: 'action'
       }
     ];
 
