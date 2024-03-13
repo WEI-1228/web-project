@@ -10,7 +10,7 @@ import java.io.IOException;
 
 @Component
 public class LogFilter implements Filter {
-    private final Logger LOG = LoggerFactory.getLogger(LogFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LogFilter.class);
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
