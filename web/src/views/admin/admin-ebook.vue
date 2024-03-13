@@ -17,7 +17,7 @@
           </template>
           <template v-if="column.key === 'action'">
             <a-space size="small">
-              <a-button type="primary" @click="edit">
+              <a-button type="primary" @click="edit(record)">
                 编辑
               </a-button>
               <a-button danger>
@@ -29,7 +29,28 @@
       </a-table>
     </a-layout-content>
     <a-modal v-model:open="open" title="删除" :confirm-loading="modalConfirmLoading" @ok="modalHandleOk">
-      <p>{{ modalText }}</p>
+      <a-form
+          :model="ebookEdit"
+          name="basic"
+          :label-col="{ span: 5 }"
+          :wrapper-col="{ span: 16 }"
+      >
+        <a-form-item label="封面">
+          <a-input v-model:value="ebookEdit.cover" />
+        </a-form-item>
+        <a-form-item label="名称">
+          <a-input v-model:value="ebookEdit.name" />
+        </a-form-item>
+        <a-form-item label="分类一">
+          <a-input v-model:value="ebookEdit.category1Id" />
+        </a-form-item>
+        <a-form-item label="分类二">
+          <a-input v-model:value="ebookEdit.category2Id" />
+        </a-form-item>
+        <a-form-item label="描述">
+          <a-textarea v-model:value="ebookEdit.desc" />
+        </a-form-item>
+      </a-form>
     </a-modal>
   </a-layout>
 </template>
@@ -116,24 +137,19 @@ export default defineComponent({
       });
     };
 
-    onMounted(() => {
-      handleQuery({
-        page: 1,
-        size: pagination.value.pageSize
-      });
-    });
-
     // 编辑按钮弹窗功能
-    const modalText = ref<string>('Content of the modal');
     const open = ref<boolean>(false);
     const modalConfirmLoading = ref<boolean>(false);
 
-    const edit = () => {
+    // 编辑弹窗的组件
+    const ebookEdit = ref();
+
+    const edit = (record: any) => {
       open.value = true;
+      ebookEdit.value = record;
     };
 
     const modalHandleOk = () => {
-      modalText.value = 'The modal will be closed after two seconds';
       modalConfirmLoading.value = true;
       setTimeout(() => {
         open.value = false;
@@ -141,14 +157,22 @@ export default defineComponent({
       }, 2000);
     };
 
+
+    onMounted(() => {
+      handleQuery({
+        page: 1,
+        size: pagination.value.pageSize
+      });
+    });
+
     return {
       ebooks,
       pagination,
       columns,
       loading,
-      modalText,
       open,
       modalConfirmLoading,
+      ebookEdit,
       edit,
       modalHandleOk,
       handleTableChange
