@@ -12,3 +12,6 @@ const icons: any = Icons;
 for (const i in icons) {
     app.component(i, icons[i]);
 }
+
+console.log("开发环境：", process.env.NODE_ENV);
+console.log("生产环境：", process.env.VUE_APP_SERVER);
