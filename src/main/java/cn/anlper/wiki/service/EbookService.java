@@ -1,10 +1,11 @@
 package cn.anlper.wiki.service;
 
-import cn.anlper.wiki.Req.EbookReq;
+import cn.anlper.wiki.Req.EbookQueryReq;
+import cn.anlper.wiki.Req.EbookSaveReq;
 import cn.anlper.wiki.domain.Ebook;
 import cn.anlper.wiki.domain.EbookExample;
 import cn.anlper.wiki.mapper.EbookMapper;
-import cn.anlper.wiki.resp.EbookResp;
+import cn.anlper.wiki.resp.EbookQueryResp;
 import cn.anlper.wiki.resp.PageResp;
 import cn.anlper.wiki.util.CopyUtil;
 import com.github.pagehelper.PageHelper;
@@ -20,7 +21,7 @@ public class EbookService {
     @Resource
     private EbookMapper ebookMapper;
 
-    public PageResp<EbookResp> list(EbookReq req) {
+    public PageResp<EbookQueryResp> list(EbookQueryReq req) {
         EbookExample ebookExample = new EbookExample();
         EbookExample.Criteria criteria = ebookExample.createCriteria();
         if (!ObjectUtils.isEmpty(req.getName()))
@@ -31,15 +32,26 @@ public class EbookService {
         PageInfo<Ebook> pageInfo = new PageInfo<>(ebookList);
 
 
-        List<EbookResp> respList = CopyUtil.copyList(ebookList, EbookResp.class);
-        PageResp<EbookResp> pageResp = new PageResp<>();
+        List<EbookQueryResp> respList = CopyUtil.copyList(ebookList, EbookQueryResp.class);
+        PageResp<EbookQueryResp> pageResp = new PageResp<>();
         pageResp.setList(respList);
         pageResp.setTotal(pageInfo.getTotal());
         return pageResp;
     }
 
-    public List<EbookResp> all(EbookReq req) {
+    public List<EbookQueryResp> all(EbookQueryReq req) {
         List<Ebook> ebookList = ebookMapper.selectByExample(null);
-        return CopyUtil.copyList(ebookList, EbookResp.class);
+        return CopyUtil.copyList(ebookList, EbookQueryResp.class);
     }
+
+    public void save(EbookSaveReq req) {
+        Ebook ebook = CopyUtil.copy(req, Ebook.class);
+        if (ObjectUtils.isEmpty(req.getId())) {
+            ebookMapper.insert(ebook);
+        } else {
+            ebookMapper.updateByPrimaryKey(ebook);
+        }
+
+    }
+
 }
