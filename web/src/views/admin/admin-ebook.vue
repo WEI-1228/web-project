@@ -17,7 +17,7 @@
           </template>
           <template v-if="column.key === 'action'">
             <a-space size="small">
-              <a-button type="primary">
+              <a-button type="primary" @click="edit">
                 编辑
               </a-button>
               <a-button danger>
@@ -28,6 +28,9 @@
         </template>
       </a-table>
     </a-layout-content>
+    <a-modal v-model:open="open" title="删除" :confirm-loading="modalConfirmLoading" @ok="modalHandleOk">
+      <p>{{ modalText }}</p>
+    </a-modal>
   </a-layout>
 </template>
 
@@ -120,11 +123,34 @@ export default defineComponent({
       });
     });
 
+    // 编辑按钮弹窗功能
+    const modalText = ref<string>('Content of the modal');
+    const open = ref<boolean>(false);
+    const modalConfirmLoading = ref<boolean>(false);
+
+    const edit = () => {
+      open.value = true;
+    };
+
+    const modalHandleOk = () => {
+      modalText.value = 'The modal will be closed after two seconds';
+      modalConfirmLoading.value = true;
+      setTimeout(() => {
+        open.value = false;
+        modalConfirmLoading.value = false;
+      }, 2000);
+    };
+
     return {
       ebooks,
       pagination,
       columns,
       loading,
+      modalText,
+      open,
+      modalConfirmLoading,
+      edit,
+      modalHandleOk,
       handleTableChange
     }
   }
