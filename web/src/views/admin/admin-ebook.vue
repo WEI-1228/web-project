@@ -132,10 +132,14 @@ export default defineComponent({
       axios.get("/ebook/list", config).then((response) => {
         loading.value = false;
         const data = response.data;
-        ebooks.value = data.content.list;
+        if (data.success) {
+          ebooks.value = data.content.list;
+          pagination.value.current = queryParams.page;
+          pagination.value.total = data.content.total;
+        } else {
+          message.error(data.message);
+        }
 
-        pagination.value.current = queryParams.page;
-        pagination.value.total = data.content.total;
       });
     };
 
@@ -202,7 +206,7 @@ export default defineComponent({
     onMounted(() => {
       handleQuery({
         page: 1,
-        size: pagination.value.pageSize
+        size: 10000
       });
     });
 
