@@ -35,6 +35,14 @@ public class DocController {
         return commonResp;
     }
 
+    @GetMapping("/find-content/{doc_id}")
+    public CommonResp<String> findContent(@PathVariable Long doc_id) {
+        CommonResp<String> commonResp = new CommonResp<>();
+        String list = docService.findContent(doc_id);
+        commonResp.setContent(list);
+        return commonResp;
+    }
+
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody DocSaveReq docSaveReq) {
         CommonResp<Object> commonResp = new CommonResp<>();

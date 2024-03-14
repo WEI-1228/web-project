@@ -19,6 +19,8 @@ public class DocSaveReq {
 
     private Integer voteCount;
 
+    private String content;
+
     public Long getId() {
         return id;
     }
@@ -73,6 +75,14 @@ public class DocSaveReq {
 
     public void setVoteCount(Integer voteCount) {
         this.voteCount = voteCount;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     @Override

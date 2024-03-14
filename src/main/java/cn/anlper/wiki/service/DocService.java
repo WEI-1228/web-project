@@ -2,8 +2,10 @@ package cn.anlper.wiki.service;
 
 import cn.anlper.wiki.Req.DocQueryReq;
 import cn.anlper.wiki.Req.DocSaveReq;
+import cn.anlper.wiki.domain.Content;
 import cn.anlper.wiki.domain.Doc;
 import cn.anlper.wiki.domain.DocExample;
+import cn.anlper.wiki.mapper.ContentMapper;
 import cn.anlper.wiki.mapper.DocMapper;
 import cn.anlper.wiki.resp.DocQueryResp;
 import cn.anlper.wiki.resp.PageResp;
@@ -22,6 +24,9 @@ public class DocService {
 
     @Resource
     DocMapper docMapper;
+
+    @Resource
+    ContentMapper contentMapper;
     @Resource
     private SnowFlake snowFlake;
     public PageResp<DocQueryResp> list(DocQueryReq req) {
@@ -39,11 +44,19 @@ public class DocService {
 
     public void save(DocSaveReq docSaveReq) {
         Doc doc = CopyUtil.copy(docSaveReq, Doc.class);
+        Content content = CopyUtil.copy(docSaveReq, Content.class);
         if (!ObjectUtils.isEmpty(doc.getId())) {
             docMapper.updateByPrimaryKey(doc);
+            int cnt = contentMapper.updateByPrimaryKeyWithBLOBs(content);
+            if (cnt == 0) {
+                contentMapper.insert(content);
+            }
         } else {
             doc.setId(snowFlake.nextId());
             docMapper.insert(doc);
+
+            content.setId(doc.getId());
+            contentMapper.insert(content);
         }
     }
 
@@ -61,8 +74,15 @@ public class DocService {
     public List<DocQueryResp> all(Long ebook_id) {
         DocExample docExample = new DocExample();
         DocExample.Criteria criteria = docExample.createCriteria();
+        docExample.setOrderByClause("sort asc");
         criteria.andEbookIdEqualTo(ebook_id);
         List<Doc> docList = docMapper.selectByExample(docExample);
         return CopyUtil.copyList(docList, DocQueryResp.class);
+    }
+
+    public String findContent(Long docId) {
+        Content content = contentMapper.selectByPrimaryKey(docId);
+        if (content != null) return content.getContent();
+        return "";
     }
 }
