@@ -26,7 +26,7 @@ create table `test` (
     `password` varchar(50) comment '密码',
     primary key (`id`)
 );
-insert into `test` values (1, '测试', 'password')
+insert into `test` values (1, '测试', 'password');
 
 drop table if exists `demo`;
 create table `demo` (
@@ -35,7 +35,7 @@ create table `demo` (
     primary key (`id`)
 );
 
-insert into `demo` values (1, '测试')
+insert into `demo` values (1, '测试');
 
 drop table if exists `category`;
 create table `category`
@@ -72,3 +72,10 @@ create table `doc` (
     `view_count` int default 0 comment '阅读数',
     `vote_count` int default 0 comment '点赞数'
 ) comment '文档';
+
+drop table if exists  `content`;
+create table `content` (
+    `id` bigint not null comment '文档id',
+    `content` mediumtext not null comment '内容',
+    primary key (`id`)
+) comment '文档内容';
