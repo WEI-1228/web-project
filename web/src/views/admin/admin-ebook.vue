@@ -4,9 +4,28 @@
         :style="{ background: '#fff', padding: '24px', margin: 0, minHeight: '280px' }"
     >
       <p>
-        <a-button type="primary" @click="add()" size="large">
-          新增
-        </a-button>
+        <a-form
+            layout="inline"
+        >
+          <a-form-item>
+            <a-input v-model:value="search" placeholder="查询名称"/>
+          </a-form-item>
+          <a-form-item>
+            <a-button
+                type="primary"
+                html-type="submit"
+                :disabled="search === ''"
+                @click="handleSearch(search)"
+            >
+              查询
+            </a-button>
+          </a-form-item>
+          <a-form-item>
+            <a-button type="primary" @click="add()">
+              新增
+            </a-button>
+          </a-form-item>
+        </a-form>
       </p>
       <a-table
           :columns="columns"
@@ -71,6 +90,7 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import { message } from 'ant-design-vue';
 import axios from 'axios';
+import {Tool} from "@/util/tool";
 
 export default defineComponent({
   name: 'AdminEbook',
@@ -126,7 +146,8 @@ export default defineComponent({
       const config = {
         params: {
           page: queryParams.page,
-          size: queryParams.size
+          size: queryParams.size,
+          name: queryParams.name
         }
       };
       axios.get("/ebook/list", config).then((response) => {
@@ -143,6 +164,14 @@ export default defineComponent({
       });
     };
 
+    const handleSearch = (name: any) => {
+      handleQuery({
+        page: 1,
+        name: name,
+        size: pagination.value.pageSize
+      });
+    }
+
     /**
      * 表格点击页码时触发
      */
@@ -150,7 +179,8 @@ export default defineComponent({
       console.log("看看自带的分页参数都有啥：" + pagination);
       handleQuery({
         page: pagination.current,
-        size: pagination.pageSize
+        size: pagination.pageSize,
+        name: search.value
       });
     };
 
@@ -161,9 +191,12 @@ export default defineComponent({
     // 编辑弹窗的组件
     const ebookEdit = ref();
 
+    // 查询按钮
+    const search = ref("");
+
     const edit = (record: any) => {
       open.value = true;
-      ebookEdit.value = record;
+      ebookEdit.value = Tool.copy(record);
     };
 
     // 新增
@@ -219,13 +252,15 @@ export default defineComponent({
       columns,
       loading,
       open,
+      search,
       modalConfirmLoading,
       ebookEdit,
       edit,
       add,
       modalHandleOk,
       handleDelete,
-      handleTableChange
+      handleTableChange,
+      handleSearch
     }
   }
 });
