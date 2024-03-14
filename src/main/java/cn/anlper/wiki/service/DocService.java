@@ -51,8 +51,18 @@ public class DocService {
         docMapper.deleteByPrimaryKey(id);
     }
 
-    public List<DocQueryResp> all() {
-        List<Doc> docList = docMapper.selectByExample(null);
+    public void delete(List<Long> ids) {
+        DocExample docExample = new DocExample();
+        DocExample.Criteria criteria = docExample.createCriteria();
+        criteria.andIdIn(ids);
+        docMapper.deleteByExample(docExample);
+    }
+
+    public List<DocQueryResp> all(Long ebook_id) {
+        DocExample docExample = new DocExample();
+        DocExample.Criteria criteria = docExample.createCriteria();
+        criteria.andEbookIdEqualTo(ebook_id);
+        List<Doc> docList = docMapper.selectByExample(docExample);
         return CopyUtil.copyList(docList, DocQueryResp.class);
     }
 }

@@ -2,14 +2,15 @@ package cn.anlper.wiki.controller;
 
 import cn.anlper.wiki.Req.DocQueryReq;
 import cn.anlper.wiki.Req.DocSaveReq;
-import cn.anlper.wiki.resp.DocQueryResp;
 import cn.anlper.wiki.resp.CommonResp;
+import cn.anlper.wiki.resp.DocQueryResp;
 import cn.anlper.wiki.resp.PageResp;
 import cn.anlper.wiki.service.DocService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,10 +27,10 @@ public class DocController {
         return commonResp;
     }
 
-    @GetMapping("/all")
-    public CommonResp<List<DocQueryResp>> all() {
+    @GetMapping("/all/{ebook_id}")
+    public CommonResp<List<DocQueryResp>> all(@PathVariable Long ebook_id) {
         CommonResp<List<DocQueryResp>> commonResp = new CommonResp<>();
-        List<DocQueryResp> list = docService.all();
+        List<DocQueryResp> list = docService.all(ebook_id);
         commonResp.setContent(list);
         return commonResp;
     }
@@ -41,10 +42,14 @@ public class DocController {
         return commonResp;
     }
 
-    @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    @DeleteMapping("/delete/{idString}")
+    public CommonResp<Object> delete(@PathVariable String idString) {
         CommonResp<Object> commonResp = new CommonResp<>();
-        docService.delete(id);
+        String[] list = idString.split(",");
+        List<Long> longList = new ArrayList<>();
+        for (String s: list)
+            longList.add(Long.valueOf(s));
+        docService.delete(longList);
         return commonResp;
     }
 
