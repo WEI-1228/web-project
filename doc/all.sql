@@ -61,3 +61,14 @@ insert into `category` value (500, 000, '其他', 500);
 insert into `category` value (501, 500, '服务器', 501);
 insert into `category` value (502, 500, '开发工具', 502);
 insert into `category` value (503, 500, '热门服务端语言', 503);
+
+drop table if exists `doc`;
+create table `doc` (
+    `id` bigint not null primary key comment 'id',
+    `ebook_id` bigint not null default 0 comment '电子书id',
+    `parent` bigint not null default 0 comment '父id',
+    `name` varchar(50) not null comment '名称',
+    `sort` int comment '顺序',
+    `view_count` int default 0 comment '阅读数',
+    `vote_count` int default 0 comment '点赞数'
+) comment '文档';
