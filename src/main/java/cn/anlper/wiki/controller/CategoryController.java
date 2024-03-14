@@ -1,15 +1,15 @@
 package cn.anlper.wiki.controller;
 
 import cn.anlper.wiki.Req.CategoryQueryReq;
+import cn.anlper.wiki.Req.CategorySaveReq;
 import cn.anlper.wiki.resp.CategoryQueryResp;
 import cn.anlper.wiki.resp.CommonResp;
 import cn.anlper.wiki.resp.PageResp;
 import cn.anlper.wiki.service.CategoryService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/category")
@@ -22,6 +22,20 @@ public class CategoryController {
         CommonResp<PageResp<CategoryQueryResp>> commonResp = new CommonResp<>();
         PageResp<CategoryQueryResp> list = categoryService.list(categoryQueryReq);
         commonResp.setContent(list);
+        return commonResp;
+    }
+
+    @PostMapping("/save")
+    public CommonResp<Object> save(@Valid @RequestBody CategorySaveReq categorySaveReq) {
+        CommonResp<Object> commonResp = new CommonResp<>();
+        categoryService.save(categorySaveReq);
+        return commonResp;
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public CommonResp<Object> delete(@PathVariable Long id) {
+        CommonResp<Object> commonResp = new CommonResp<>();
+        categoryService.delete(id);
         return commonResp;
     }
 

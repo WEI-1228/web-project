@@ -39,7 +39,7 @@
         </template>
       </a-table>
     </a-layout-content>
-    <a-modal v-model:open="open" title="删除" :confirm-loading="modalConfirmLoading" @ok="modalHandleOk">
+    <a-modal v-model:open="open" title="增加" :confirm-loading="modalConfirmLoading" @ok="modalHandleOk">
       <a-form
           :model="categoryEdit"
           name="basic"
@@ -50,7 +50,7 @@
           <a-input v-model:value="categoryEdit.name" />
         </a-form-item>
         <a-form-item label="父分类">
-          <a-input v-model:value="categoryEdit.father" />
+          <a-input v-model:value="categoryEdit.parent" />
         </a-form-item>
         <a-form-item label="顺序">
           <a-input v-model:value="categoryEdit.sort" />

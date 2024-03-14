@@ -59,7 +59,7 @@
         </template>
       </a-table>
     </a-layout-content>
-    <a-modal v-model:open="open" title="删除" :confirm-loading="modalConfirmLoading" @ok="modalHandleOk">
+    <a-modal v-model:open="open" title="增加" :confirm-loading="modalConfirmLoading" @ok="modalHandleOk">
       <a-form
           :model="ebookEdit"
           name="basic"
