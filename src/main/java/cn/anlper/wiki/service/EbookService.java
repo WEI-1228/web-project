@@ -38,7 +38,6 @@ public class EbookService {
         PageResp<EbookQueryResp> pageResp = new PageResp<>();
         pageResp.setList(respList);
         pageResp.setTotal(pageInfo.getTotal());
-        System.out.println(pageResp);
         return pageResp;
     }
 
