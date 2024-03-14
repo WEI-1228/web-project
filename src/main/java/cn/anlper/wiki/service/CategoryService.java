@@ -51,4 +51,8 @@ public class CategoryService {
         categoryMapper.deleteByPrimaryKey(id);
     }
 
+    public List<CategoryQueryResp> all() {
+        List<Category> categoryList = categoryMapper.selectByExample(null);
+        return CopyUtil.copyList(categoryList, CategoryQueryResp.class);
+    }
 }
