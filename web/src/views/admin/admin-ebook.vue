@@ -189,15 +189,18 @@ export default defineComponent({
       modalConfirmLoading.value = true;
       axios.post("/ebook/save", ebookEdit.value).then((response) => {
         const data = response.data;
+        modalConfirmLoading.value = false;
         if (data.success) {
           open.value = false;
-          modalConfirmLoading.value = false;
+
 
           // 重新加载列表
           handleQuery({
             page: pagination.value.current,
             size: pagination.value.pageSize
           })
+        } else {
+          message.error(data.message);
         }
       });
     };
@@ -206,7 +209,7 @@ export default defineComponent({
     onMounted(() => {
       handleQuery({
         page: 1,
-        size: 10000
+        size: pagination.value.pageSize
       });
     });
 
