@@ -7,6 +7,7 @@ import cn.anlper.wiki.domain.Doc;
 import cn.anlper.wiki.domain.DocExample;
 import cn.anlper.wiki.mapper.ContentMapper;
 import cn.anlper.wiki.mapper.DocMapper;
+import cn.anlper.wiki.mapper.DocMapperCust;
 import cn.anlper.wiki.resp.DocQueryResp;
 import cn.anlper.wiki.resp.PageResp;
 import cn.anlper.wiki.util.CopyUtil;
@@ -24,6 +25,9 @@ public class DocService {
 
     @Resource
     DocMapper docMapper;
+
+    @Resource
+    DocMapperCust docMapperCust;
 
     @Resource
     ContentMapper contentMapper;
@@ -53,6 +57,8 @@ public class DocService {
             }
         } else {
             doc.setId(snowFlake.nextId());
+            doc.setViewCount(0);
+            doc.setVoteCount(0);
             docMapper.insert(doc);
 
             content.setId(doc.getId());
@@ -82,6 +88,8 @@ public class DocService {
 
     public String findContent(Long docId) {
         Content content = contentMapper.selectByPrimaryKey(docId);
+        // 文档阅读数加一
+        docMapperCust.increaseViewCount(docId);
         if (content != null) return content.getContent();
         return "";
     }
