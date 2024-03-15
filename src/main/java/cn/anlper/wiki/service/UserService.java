@@ -1,5 +1,6 @@
 package cn.anlper.wiki.service;
 
+import cn.anlper.wiki.Req.UserLoginReq;
 import cn.anlper.wiki.Req.UserQueryReq;
 import cn.anlper.wiki.Req.UserResetPasswordReq;
 import cn.anlper.wiki.Req.UserSaveReq;
@@ -9,11 +10,14 @@ import cn.anlper.wiki.exception.BusinessException;
 import cn.anlper.wiki.exception.BusinessExceptionCode;
 import cn.anlper.wiki.mapper.UserMapper;
 import cn.anlper.wiki.resp.PageResp;
+import cn.anlper.wiki.resp.UserLoginResp;
 import cn.anlper.wiki.resp.UserQueryResp;
 import cn.anlper.wiki.util.CopyUtil;
 import cn.anlper.wiki.util.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -27,6 +31,9 @@ public class UserService {
     private UserMapper userMapper;
     @Resource
     private SnowFlake snowFlake;
+
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
     public PageResp<UserQueryResp> list(UserQueryReq req) {
         UserExample userExample = new UserExample();
         UserExample.Criteria criteria = userExample.createCriteria();
@@ -83,5 +90,25 @@ public class UserService {
     public void resetPassword(UserResetPasswordReq req) {
         User user = CopyUtil.copy(req, User.class);
         userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    public UserLoginResp login(UserLoginReq req) {
+        User userDb = selectByLoginName(req.getLoginName());
+        if (ObjectUtils.isEmpty(userDb)) {
+            LOG.info("用户名不存在,{}", req.getLoginName());
+            // 用户名不存在
+            throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+        } else {
+            if (userDb.getPassword().equals(req.getPassword())) {
+                // 登陆成功
+                UserLoginResp userLoginResp = CopyUtil.copy(userDb, UserLoginResp.class);
+                return userLoginResp;
+            } else {
+                // 密码错误
+                LOG.info("密码不对，输入密码：{}, 数据库密码：{}", req.getLoginName(), req.getPassword());
+                throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
+            }
+        }
+
     }
 }

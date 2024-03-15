@@ -1,10 +1,12 @@
 package cn.anlper.wiki.controller;
 
+import cn.anlper.wiki.Req.UserLoginReq;
 import cn.anlper.wiki.Req.UserQueryReq;
 import cn.anlper.wiki.Req.UserResetPasswordReq;
 import cn.anlper.wiki.Req.UserSaveReq;
 import cn.anlper.wiki.resp.CommonResp;
 import cn.anlper.wiki.resp.PageResp;
+import cn.anlper.wiki.resp.UserLoginResp;
 import cn.anlper.wiki.resp.UserQueryResp;
 import cn.anlper.wiki.service.UserService;
 import org.springframework.util.DigestUtils;
@@ -56,6 +58,15 @@ public class UserController {
         req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
         CommonResp<Object> resp = new CommonResp<>();
         userService.resetPassword(req);
+        return resp;
+    }
+
+    @PostMapping("/login")
+    public CommonResp<UserLoginResp> login(@RequestBody @Valid UserLoginReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp<UserLoginResp> resp = new CommonResp<>();
+        UserLoginResp userLoginResp = userService.login(req);
+        resp.setContent(userLoginResp);
         return resp;
     }
 }
