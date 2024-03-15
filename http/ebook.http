@@ -1,4 +1,4 @@
-GET http://localhost:8880/ebook/list?page=1&size=100
+GET http://localhost:8880/ebook/list?page=1&size=10001
 
 ###
 
@@ -14,4 +14,6 @@ DELETE http://localhost:8880/ebook/delete/423129729537806336
 
 ###
 
-GET http://localhost:8880/category/list
+GET http://localhost:8880/user/all
+
+###
