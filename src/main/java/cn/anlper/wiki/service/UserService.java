@@ -1,6 +1,7 @@
 package cn.anlper.wiki.service;
 
 import cn.anlper.wiki.Req.UserQueryReq;
+import cn.anlper.wiki.Req.UserResetPasswordReq;
 import cn.anlper.wiki.Req.UserSaveReq;
 import cn.anlper.wiki.domain.User;
 import cn.anlper.wiki.domain.UserExample;
@@ -79,4 +80,8 @@ public class UserService {
         return users.get(0);
     }
 
+    public void resetPassword(UserResetPasswordReq req) {
+        User user = CopyUtil.copy(req, User.class);
+        userMapper.updateByPrimaryKeySelective(user);
+    }
 }

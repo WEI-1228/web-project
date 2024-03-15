@@ -1,10 +1,11 @@
 package cn.anlper.wiki.controller;
 
 import cn.anlper.wiki.Req.UserQueryReq;
+import cn.anlper.wiki.Req.UserResetPasswordReq;
 import cn.anlper.wiki.Req.UserSaveReq;
 import cn.anlper.wiki.resp.CommonResp;
-import cn.anlper.wiki.resp.UserQueryResp;
 import cn.anlper.wiki.resp.PageResp;
+import cn.anlper.wiki.resp.UserQueryResp;
 import cn.anlper.wiki.service.UserService;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,14 @@ public class UserController {
     public CommonResp<Object> delete(@PathVariable Long id) {
         CommonResp<Object> resp = new CommonResp<>();
         userService.delete(id);
+        return resp;
+    }
+
+    @PostMapping("/reset-password")
+    public CommonResp<Object> resetPassword(@RequestBody @Valid UserResetPasswordReq req) {
+        req.setPassword(DigestUtils.md5DigestAsHex(req.getPassword().getBytes()));
+        CommonResp<Object> resp = new CommonResp<>();
+        userService.resetPassword(req);
         return resp;
     }
 }
