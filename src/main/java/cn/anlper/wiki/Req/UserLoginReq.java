@@ -1,14 +1,14 @@
 package cn.anlper.wiki.Req;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
 public class UserLoginReq {
 
-    @NotNull(message = "用户名不能为空")
+    @NotEmpty(message = "用户名不能为空")
     private String loginName;
 
-    @NotNull(message = "密码不能为空")
+    @NotEmpty(message = "密码不能为空")
 //    @Length(min = 6, max = 20, message = "密码必须为6~20位")
     @Pattern(regexp = "^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,32}$", message = "密码非法")
     private String password;
