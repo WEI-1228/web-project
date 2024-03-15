@@ -5,12 +5,16 @@ import cn.anlper.wiki.Req.DocSaveReq;
 import cn.anlper.wiki.domain.Content;
 import cn.anlper.wiki.domain.Doc;
 import cn.anlper.wiki.domain.DocExample;
+import cn.anlper.wiki.exception.BusinessException;
+import cn.anlper.wiki.exception.BusinessExceptionCode;
 import cn.anlper.wiki.mapper.ContentMapper;
 import cn.anlper.wiki.mapper.DocMapper;
 import cn.anlper.wiki.mapper.DocMapperCust;
 import cn.anlper.wiki.resp.DocQueryResp;
 import cn.anlper.wiki.resp.PageResp;
 import cn.anlper.wiki.util.CopyUtil;
+import cn.anlper.wiki.util.RedisUtil;
+import cn.anlper.wiki.util.RequestContext;
 import cn.anlper.wiki.util.SnowFlake;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -33,6 +37,9 @@ public class DocService {
     ContentMapper contentMapper;
     @Resource
     private SnowFlake snowFlake;
+
+    @Resource
+    private RedisUtil redisUtil;
     public PageResp<DocQueryResp> list(DocQueryReq req) {
         DocExample docExample = new DocExample();
         PageHelper.startPage(req.getPage(), req.getSize());
@@ -92,5 +99,14 @@ public class DocService {
         docMapperCust.increaseViewCount(docId);
         if (content != null) return content.getContent();
         return "";
+    }
+
+    public void vote(Long docId) {
+        String ip = RequestContext.getRemoteAddr();
+        if (redisUtil.validateRepeat("DOC_VOTE_" + docId + "_" + ip, 3600 * 24)) {
+            docMapperCust.increaseVoteCount(docId);
+        } else {
+            throw new BusinessException(BusinessExceptionCode.VOTE_REPEAT);
+        }
     }
 }
